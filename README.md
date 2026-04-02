@@ -18,3 +18,15 @@ ORDER BY a.nom, a.prenom, e.nom;
 
 ![alt text](image.png)
 ---
+
+
+voicci la requete suivante que j'ai effectué avec une preuve dans ma base de données :
+
+SELECT CONCAT(a.prenom, ' ', UPPER(a.nom)) AS 'Prénom NOM'
+FROM athlete a
+JOIN participation p ON p.id_athlete = a.id_athlete
+GROUP BY a.id_athlete, a.prenom, a.nom
+HAVING COUNT(DISTINCT p.id_epreuve) >= 2
+ORDER BY a.prenom, a.nom;
+
+![alt text](image-1.png)
