@@ -19,9 +19,6 @@ ORDER BY a.nom, a.prenom, e.nom;
 ![alt text](image.png)
 ---
 
-
-voicci la requete suivante que j'ai effectué avec une preuve dans ma base de données :
-
 SELECT CONCAT(a.prenom, ' ', UPPER(a.nom)) AS 'Prénom NOM'
 FROM athlete a
 JOIN participation p ON p.id_athlete = a.id_athlete
@@ -30,3 +27,18 @@ HAVING COUNT(DISTINCT p.id_epreuve) >= 2
 ORDER BY a.prenom, a.nom;
 
 ![alt text](image-1.png)
+
+
+---
+voici la requête pour la question 3
+
+SELECT DISTINCT a.nom, p.nom AS pays
+FROM athlete a
+JOIN pays p ON p.id_pays = a.id_pays
+JOIN participation pa ON pa.id_athlete = a.id_athlete
+LEFT JOIN run r ON r.id_athlete = pa.id_athlete AND r.id_epreuve = pa.id_epreuve
+WHERE r.id_run IS NULL
+ORDER BY a.nom, p.nom;
+
+![alt text](image-2.png)
+---
