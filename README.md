@@ -84,3 +84,52 @@ CALL classement_epreuve(1);
 ``
 
 ![alt text](image-3.png)
+
+
+---
+voici mon trigger :
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS note_before_insert $$
+CREATE TRIGGER note_before_insert
+BEFORE INSERT ON note
+FOR EACH ROW
+BEGIN
+    IF NEW.valeur < 0 OR NEW.valeur > 100 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'La note doit etre entre 0 et 100';
+    END IF;
+END $$
+
+DROP TRIGGER IF EXISTS note_before_update $$
+CREATE TRIGGER note_before_update
+BEFORE UPDATE ON note
+FOR EACH ROW
+BEGIN
+    IF NEW.valeur < 0 OR NEW.valeur > 100 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'La note doit etre entre 0 et 100';
+    END IF;
+END $$
+
+DELIMITER ;
+
+et voici 2 requêtes pour tester si le trigger fonctionne ou pas :
+
+UPDATE note
+SET valeur = 150
+WHERE id_run = 1 AND id_juge = 1 AND id_critere = 1;
+
+![alt text](image-4.png)
+
+UPDATE note
+SET valeur = 88
+WHERE id_run = 1 AND id_juge = 1 AND id_critere = 1;
+
+![alt text](image-5.png)
+---
+
+
+## Bonus:
+Après avoir manipulé sur les requêtes et les donnés, on peut améliorer cette DB en ajoutant plus de contraintes, en vérifiant mieux les données et en simplifiant certaines relations. clea rend la DB plus propre, plus fiable et plus facile à utilisser
