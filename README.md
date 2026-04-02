@@ -42,3 +42,45 @@ ORDER BY a.nom, p.nom;
 
 ![alt text](image-2.png)
 ---
+
+voici la requête souhaitée pour la question 4:
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS classement_epreuve $$
+
+CREATE PROCEDURE classement_epreuve(IN p_id_epreuve INT)
+BEGIN
+    SELECT
+        @rang := @rang + 1 AS rang,
+        resultat.nom,
+        resultat.prenom,
+        resultat.epreuve,
+        resultat.note_finale
+    FROM (
+        SELECT
+            a.nom,
+            a.prenom,
+            e.nom AS epreuve,
+            ROUND(SUM(n.valeur * c.poids) / SUM(c.poids), 2) AS note_finale
+        FROM athlete a
+        JOIN participation pa ON pa.id_athlete = a.id_athlete
+        JOIN epreuve e ON e.id_epreuve = pa.id_epreuve
+        JOIN run r ON r.id_athlete = a.id_athlete AND r.id_epreuve = e.id_epreuve
+        JOIN note n ON n.id_run = r.id_run
+        JOIN critere c ON c.id_critere = n.id_critere
+        WHERE e.id_epreuve = p_id_epreuve
+        GROUP BY a.id_athlete, a.nom, a.prenom, e.id_epreuve, e.nom
+        ORDER BY note_finale DESC
+    ) AS resultat
+    CROSS JOIN (SELECT @rang := 0) AS init;
+END $$
+
+DELIMITER ;
+
+Voici la preuve de ma requête :
+
+``
+CALL classement_epreuve(1);
+``
+
+![alt text](image-3.png)
